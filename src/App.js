@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import classes from './App.module.css';
+
+import { UiComponents, Scenes } from './config/import_paths';
+
+const Home = Scenes.Home();
+const Favourites = Scenes.Favourites();
+
+const Layout = UiComponents.Layout();
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className = {classes.App}>
+        <Layout />
+        <Switch>
+            <Route path = "/home" component = {Home} />
+            <Route path = "/favourites" component = {Favourites} />
+            <Redirect to = "/home" />
+          </Switch>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter((App));

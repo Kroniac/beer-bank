@@ -1,0 +1,28 @@
+.App {
+
+}
+
+body {
+  background: #ecf0f1;
+}
+
+.root {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
+  min-width: 50vw;
+  justify-content: center;
+  padding-top: 70px;
+}
+
+.centerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.centerRowContainer {
+  display: flex;
+  align-items: center;
+}
