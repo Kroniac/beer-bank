@@ -5,6 +5,7 @@ export const Scenes = {
 
 export const SharedUI = {
   TextInput: () => require('../shared_ui/text_input/text_input'),
+  BeerItemCard: () => require('../shared_ui/beer_item_card/beer_item_card'),
 };
 
 export const UiComponents = {
@@ -15,4 +16,5 @@ export const UiComponents = {
 
 export const Config = {
   ApiUrls: () => require('./api_urls'),
+  Constants:() => require('./constants.js'),
 }

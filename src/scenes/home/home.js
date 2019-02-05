@@ -1,9 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import { string } from 'prop-types';
 import axios from 'axios';
-import { Icon } from 'react-icons-kit';
-import { star } from 'react-icons-kit/fa/star';
-import { starO } from 'react-icons-kit/fa/starO';
 import Qs from 'qs';
 import Waypoint from 'react-waypoint';
 import classes from './home.module.css';
@@ -14,6 +11,7 @@ import { SharedUI, Config } from '../../config/import_paths';
 const { ApiUrls } = Config.ApiUrls();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
+const { BeerItemCard } = SharedUI.BeerItemCard();
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
@@ -23,6 +21,7 @@ export default class Home extends Component {
     searchText: '',
     isFetching: false,
     isErrored: false,
+    favouriteItems: {},
   }
 
   componentDidMount() {
@@ -123,8 +122,8 @@ export default class Home extends Component {
   }
 
   render() {
-    const { searchText, beersData, isErrored, isFetching } = this.state;
-    const { history } = this.props;
+    const { searchText, beersData, isErrored, favouriteItems, isFetching } = this.state;
+    const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     return (
       <div className = {classes.root}>
         <div className = {classes.headerSearchBox}>
@@ -144,7 +143,7 @@ export default class Home extends Component {
           beersData.length === 0 && !isFetching ? (
             <div className = {classes.container}>
               <div className = {classes.centerContainer}>
-                No Beer (s) Found
+                No Beer(s) Found
               </div>
             </div>
           ) : (
@@ -152,10 +151,14 @@ export default class Home extends Component {
               {
                 beersData.map((data, index) => (
                   <BeerItemCard
+                    key = {data.id}
+                    data = {data}
                     imageSrc = {data.image_url}
                     title = {data.name}
                     tagline = {data.tagline}
                     history = {history}
+                    isFavourite = {favouriteBeers[data.id]}
+                    addToFavouritesHandler = {addToFavouritesHandler}
                   />
                 ))
             }
@@ -166,39 +169,5 @@ export default class Home extends Component {
         }
       </div>
     );
-  }
-}
-
-class BeerItemCard extends PureComponent {
-  static propTypes = {
-    imageSrc: string.isRequired,
-    title: string.isRequired,
-    tagline: string.isRequired,
-  }
-
-  _onBeerItemCardClick = () => {
-    this.props.history.push('/anime_characters')
-  }
-
-  render() {
-    const { imageSrc, title, tagline } = this.props;
-    return (
-      <div className = {classes.cardContainer} onClick = {this._onBeerItemCardClick} >
-        <div className = {classes.star}>
-          <Icon
-            onClick = {this._toggleCardDetailsVisiblity}
-            icon = {starO}
-            size = {15}
-          />
-        </div>
-        <figure className = {classes.cardFigure} >
-          <img src = {imageSrc} alt = {title}/>
-          <figcaption>
-            <span className = {classes.title} >{title}</span>
-            <span className = {classes.tagline} >{tagline}</span>
-          </figcaption>
-        </figure>
-      </div>
-    )
   }
 }

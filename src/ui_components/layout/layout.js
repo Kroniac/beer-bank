@@ -11,29 +11,11 @@ class Layout extends Component {
     children: element.isRequired,
   }
 
-  state = {
-    isSideDrawerVisible: false,
-  };
-
-  _closeSideDrawer = () => {
-    this.setState({ isSideDrawerVisible: false });
-  };
-
-  _toggleMenuHandler = () => {
-    this.setState(prevState => ({ isSideDrawerVisible: !prevState.isSideDrawerVisible }));
-  };
-
   render() {
     const { children } = this.props;
     return (
       <React.Fragment>
-        <Toolbar
-          toggleMenu = {this._toggleMenuHandler}
-        />
-        {/* <SideDrawer
-          isSideDrawerVisible = {this.state.isSideDrawerVisible}
-          closeSideDrawer = {this._closeSideDrawer}
-        /> */}
+        <Toolbar />
         <main className = {classes.Content}>{children}</main>
       </React.Fragment>
     );

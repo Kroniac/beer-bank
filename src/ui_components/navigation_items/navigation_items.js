@@ -7,10 +7,10 @@ export default class NavigationItems extends Component {
     return (
       <ul className = {classes.NavigationItems}>
         <li className = {classes.NavigationItem}>
-          <NavLink activeClassName = {classes.active} exact to = '/home'>
+          <NavLink activeClassName = {classes.active} exact to = "/home">
             Home
           </NavLink>
-          <NavLink activeClassName = {classes.active} exact to = '/favourites'>
+          <NavLink activeClassName = {classes.active} exact to = "/favourites">
             Favourites
           </NavLink>
         </li>

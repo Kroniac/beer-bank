@@ -28,17 +28,3 @@
      color: white;
      font-size: 10px;
    }
-@media (max-width: 499px) {
-  .DesktopOnly {
-    display: none;
-  }
-  .Title {
-    display: none;
-  }
-}
-@media (min-width: 500px) and (max-width: 850px) {
-    
-    .Title {
-     margin-left: 80px;
-    }
-  }
