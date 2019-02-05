@@ -24,6 +24,8 @@ export default class Home extends Component {
     favouriteItems: {},
   }
 
+  filters = {};
+
   componentDidMount() {
     this._fetchBeers();
   }
@@ -31,7 +33,7 @@ export default class Home extends Component {
   _fetchBeers = (pageNumber = INITIAL_PAGE) => new Promise((resolve, reject) => {
     this.setState({ isFetching: true });
     let params = {};
-    const { beersData } = this.state;
+    const { beersData, searchText } = this.state;
     params = {
       page: pageNumber,
       per_page: PAGE_SIZE,  
@@ -43,7 +45,6 @@ export default class Home extends Component {
     console.log(url);
     axios({ url })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
           const nextPage = res.data.length === PAGE_SIZE ? pageNumber + 1 : null;
           let newData = [];
@@ -64,6 +65,7 @@ export default class Home extends Component {
         }
       })
       .catch((err) => {
+        console.log(err);
         // const { setLoggedInStateHandler } = this.props;
         // const errorCode = GetNetErrorCode(err);
         // if (errorCode === 401) setLoggedInStateHandler(false);
@@ -118,7 +120,10 @@ export default class Home extends Component {
   }
 
   _onChangeTextHandler = (attrName, value) => {
-    this.setState({ [attrName]: value  });
+    this.setState({ [attrName]: value });
+    if (value !== '') this.filters.beer_name = value;
+    else delete this.filters.beer_name;
+    this._fetchBeers();
   }
 
   render() {

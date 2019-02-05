@@ -1,6 +1,7 @@
 .cardContainer {
   display: flex;
   position: relative;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.075);
   height: 300px;
   width: 250px;
   margin: 10px;
@@ -8,12 +9,15 @@
   align-items: center;
   flex-direction: column;
   background: white;
+  border-radius: 2px;
 }
 
 .cardContainer:hover {
   border-color: #f39c12;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #f39c12;
   outline: 0 none;
+  transition: transform 0.2s;
+  transform: scale(1.05);
 }
 
 .cardContainer .star {
