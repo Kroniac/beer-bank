@@ -25,11 +25,10 @@ export default class Home extends Component {
     isFetching: false,
     isErrored: false,
     isDetailedBeerModalVisible: false,
+    selectedBeer: {}
   }
 
   filters = {};
-
-  selectedBeer = {};
 
   beerUnitFields = [
     {
@@ -148,8 +147,14 @@ export default class Home extends Component {
   }
 
   _onBeerItemCardClick = (data) => {
-    this.selectedBeer = data;
-    this.setState({ isDetailedBeerModalVisible: true });
+    this.setState({ selectedBeer: data, isDetailedBeerModalVisible: true });
+  }
+
+  _onSimilarBeerClickHandler = (data) => {
+    const { selectedBeer } = this.state;
+    if (data.id !== selectedBeer.id) {
+      this.setState({ selectedBeer: data });
+    }
   }
 
   _hideDetailedBeerModal = (e) => {
@@ -158,7 +163,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { searchText, beersData, isErrored, isDetailedBeerModalVisible, isFetching } = this.state;
+    const { searchText, beersData, isErrored, isDetailedBeerModalVisible, isFetching, selectedBeer } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     return (
       <div className = {classes.root}>
@@ -208,10 +213,11 @@ export default class Home extends Component {
           isDetailedBeerModalVisible ? (
             <DetailedBeerModal
               isVisible = {isDetailedBeerModalVisible}
-              beerData = {this.selectedBeer}
+              beerData = {selectedBeer}
               onBackDropClick = {this._hideDetailedBeerModal}
               onCloseClick = {this._hideDetailedBeerModal}
               beerUnitFields = {this.beerUnitFields}
+              onSimilarBeerClick = {this._onSimilarBeerClickHandler}
             />
           ) : null
         }

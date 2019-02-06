@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string } from 'prop-types';
+import { string, number, shape } from 'prop-types';
 import axios from 'axios';
 import Qs from 'qs';
 import { Icon } from 'react-icons-kit';
@@ -13,13 +13,20 @@ const { ApiUrls } = Config.ApiUrls();
 const { Modal } = SharedUI.Modal();
 
 export class DetailedBeerModal extends Component {
+  static propTypes = {
+    beerData: shape({
+      id: number,
+    }).isRequired,
+  }
+
   state = {
     similarBeers: [],
     isFetching: false,
   }
 
   componentDidMount() {
-    this._fetchSimilarBeers(this.props.beerData.ingredients.yeast);
+    const { beerData } = this.props;
+    this._fetchSimilarBeers(beerData.ingredients.yeast);
   }
 
   _fetchSimilarBeers = yeastName => new Promise((resolve, reject) => {
@@ -62,7 +69,7 @@ export class DetailedBeerModal extends Component {
 
   _renderSimilarBeerCardList = () => {
     const { isFetching, similarBeers } = this.state;
-    let renderItem = null;
+    const { onSimilarBeerClick } = this.props;
     if (isFetching) return <span>Loading...</span>;
     if (similarBeers.length === 0) {
       return (
@@ -77,8 +84,10 @@ export class DetailedBeerModal extends Component {
           similarBeers.map(data => (
             <SimilarBeerCard
               key = {data.id}
+              beerData = {data}
               imageSrc = {data.image_url}
               title = {data.name}
+              onSimilarBeerCardClick = {onSimilarBeerClick}
             />
           ))
         }
@@ -154,10 +163,16 @@ export class DetailedBeerModal extends Component {
 }
 
 class SimilarBeerCard extends Component {
+
+  _onCardClick = () => {
+    const { beerData, onSimilarBeerCardClick } = this.props;
+    onSimilarBeerCardClick(beerData);
+  }
+
   render() {
     const { imageSrc, title } = this.props;
     return (
-      <div className = {classes.similarBeerCardContainer}>
+      <div className = {classes.similarBeerCardContainer} onClick = {this._onCardClick}>
         <figure className = {classes.cardFigure}>
           <img src = {imageSrc} alt = {title} />
           <figcaption>

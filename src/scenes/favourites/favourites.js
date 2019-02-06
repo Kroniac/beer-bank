@@ -8,6 +8,7 @@ const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
 
 export default class Favourites extends Component {
   state = {
+    selectedBeer: {},
     isDetailedBeerModalVisible: false,
   }
 
@@ -27,18 +28,23 @@ export default class Favourites extends Component {
   ];
 
   _onBeerItemCardClick = (data) => {
-    this.selectedBeer = data;
-    this.setState({ isDetailedBeerModalVisible: true });
+    this.setState({ selectedBeer: data, isDetailedBeerModalVisible: true });
   }
 
-  
   _hideDetailedBeerModal = (e) => {
     e.stopPropagation();
     this.setState({ isDetailedBeerModalVisible: false });
   }
 
+  _onSimilarBeerClickHandler = (data) => {
+    const { selectedBeer } = this.state;
+    if (data.id !== selectedBeer.id) {
+      this.setState({ selectedBeer: data });
+    }
+  }
+
   render() {
-    const { isDetailedBeerModalVisible } = this.state;
+    const { isDetailedBeerModalVisible, selectedBeer } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     const favouriteBeersKeys = Object.keys(favouriteBeers);
     return (
@@ -74,10 +80,11 @@ export default class Favourites extends Component {
           isDetailedBeerModalVisible ? (
             <DetailedBeerModal
               isVisible = {isDetailedBeerModalVisible}
-              beerData = {this.selectedBeer}
+              beerData = {selectedBeer}
               onBackDropClick = {this._hideDetailedBeerModal}
               onCloseClick = {this._hideDetailedBeerModal}
               beerUnitFields = {this.beerUnitFields}
+              onSimilarBeerClick = {this._onSimilarBeerClickHandler}
             />
           ) : null
         }

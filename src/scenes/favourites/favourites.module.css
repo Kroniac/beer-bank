@@ -19,3 +19,16 @@
   padding: 10px;
   margin-top: 50px;
 }
+
+@media (max-width: 845px) {
+  .beersListContainer {
+    margin-top: 0px;
+  }
+}
+
+@media (max-width: 500px) {
+  .beersListContainer {
+    margin-top: 0px;
+    padding: 10px 0px;
+  }
+}
