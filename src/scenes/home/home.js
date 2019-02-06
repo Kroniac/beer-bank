@@ -14,7 +14,7 @@ const { ApiUrls } = Config.ApiUrls();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
 const { BeerItemCard } = SharedUI.BeerItemCard();
-const { BackDrop } = SharedUI.BackDrop();
+const { Modal } = SharedUI.Modal();
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
@@ -196,6 +196,7 @@ export default class Home extends Component {
                     isFavourite = {favouriteBeers[data.id]}
                     addToFavouritesHandler = {addToFavouritesHandler}
                     onBeerItemCardClick = {this._onBeerItemCardClick}
+                    returnSimilarBeers = {this._fetchSimilarBeers}
                   />
                 ))
             }
@@ -222,14 +223,83 @@ export default class Home extends Component {
 }
 
 class BeerDetailsDialogBox extends Component {
+  state = {
+    similarBeers: [],
+    isFetching: false,
+  }
+
   componentDidMount() {
-    this.props.fetchSimilarBeers()
+    this._fetchSimilarBeers(this.props.beerData.ingredients.yeast);
+  }
+
+  _fetchSimilarBeers = yeastName => new Promise((resolve, reject) => {
+    this.setState({ isFetching: true });
+    const params = {
+      page: 1,
+      per_page: 3,  
+      yeast: yeastName,
+    };
+    const urlParameters = Qs.stringify(params);
+    const url = ApiUrls.baseUrl
+      + ApiUrls.getBeers.replace(/{urlParameters}/gi, urlParameters);
+    axios({ url })
+      .then((res) => {
+        if (res.status === 200) {
+          this.setState(
+            { similarBeers: res.data },
+            () => this.setState({ isFetching: false }),
+          );
+          resolve();
+        } else {
+          this.setState({ isFetching: false });
+          reject();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // const { setLoggedInStateHandler } = this.props;
+        // const errorCode = GetNetErrorCode(err);
+        // if (errorCode === 401) setLoggedInStateHandler(false);
+        // else if (!this.isUnmounted) {
+        //   if (errorCode === 400) this._openSnackBar('Not Found');
+        //   else this._openSnackBar();
+        //   this.setState({ isFetching: false, isErrored: true });
+        //   StandardNetErrorHandling(err);
+        //   reject();
+        // }
+      });
+  });
+
+  _renderSimilarBeerCardList = () => {
+    const { isFetching, similarBeers } = this.state;
+    let renderItem = null;
+    if (isFetching) return <span>Loading...</span>;
+    if (similarBeers.length === 0) {
+      return (
+        <div className = {classes.similarBeersList}>
+          <span>No similar beers found</span>
+        </div>
+      );
+    }
+    return (
+      <div className = {classes.similarBeersList}>
+        {
+          similarBeers.map(data => (
+            <SimilarBeerCard
+              imageSrc = {data.image_url}
+              title = {data.name}
+            />
+          ))
+        }
+      </div>
+    );
   }
 
   render() {
+    const { similarBeers } = this.state;
     const { isVisible, beerData, onBackDropClick, onCloseClick, beerUnitFields } = this.props;
     return (
-      <BackDrop
+      <Modal
         frameStyles = {classes.backDrop}
         onClick = {onBackDropClick}
         show = {isVisible}
@@ -281,14 +351,13 @@ class BeerDetailsDialogBox extends Component {
             </div>
             <div className = {classes.similarBeersContainer} >
               <span className = {classes.heading}>You might also like:</span>
-              <SimilarBeerCard
-                imageSrc = 'https://images.punkapi.com/v2/2.png'
-                title = 'Trashy Blonde'
-              />
+              {
+                this._renderSimilarBeerCardList()
+              }
             </div>
           </div>
         </div>
-      </BackDrop>
+      </Modal>
     );
   }
 }

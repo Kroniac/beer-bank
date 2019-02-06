@@ -6,7 +6,7 @@ export const Scenes = {
 export const SharedUI = {
   TextInput: () => require('../shared_ui/text_input/text_input'),
   BeerItemCard: () => require('../shared_ui/beer_item_card/beer_item_card'),
-  BackDrop: () => require('../shared_ui/back_drop/back_drop'),
+  Modal: () => require('../shared_ui/modal/modal'),
 };
 
 export const UiComponents = {
