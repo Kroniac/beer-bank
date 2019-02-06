@@ -3,6 +3,8 @@ import { string } from 'prop-types';
 import axios from 'axios';
 import Qs from 'qs';
 import Waypoint from 'react-waypoint';
+import { Icon } from 'react-icons-kit';
+import { cross } from 'react-icons-kit/entypo/cross';
 import classes from './home.module.css';
 
 import { SharedUI, Config } from '../../config/import_paths';
@@ -12,6 +14,7 @@ const { ApiUrls } = Config.ApiUrls();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
 const { BeerItemCard } = SharedUI.BeerItemCard();
+const { BackDrop } = SharedUI.BackDrop();
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
@@ -21,10 +24,27 @@ export default class Home extends Component {
     searchText: '',
     isFetching: false,
     isErrored: false,
-    favouriteItems: {},
+    isVisible: false,
   }
 
   filters = {};
+
+  selectedBeer = {};
+
+  beerUnitFields = [
+    {
+      title: 'IBU',
+      keyName: 'ibu',
+    },
+    {
+      title: 'ABV',
+      keyName: 'abv',
+    },
+    {
+      title: 'EBC',
+      keyName: 'ebc',
+    },
+  ];
 
   componentDidMount() {
     this._fetchBeers();
@@ -45,6 +65,7 @@ export default class Home extends Component {
     console.log(url);
     axios({ url })
       .then((res) => {
+        console.log(res.data);
         if (res.status === 200) {
           const nextPage = res.data.length === PAGE_SIZE ? pageNumber + 1 : null;
           let newData = [];
@@ -126,8 +147,18 @@ export default class Home extends Component {
     this._fetchBeers();
   }
 
+  _onBeerItemCardClick = (data) => {
+    this.selectedBeer = data;
+    this.setState({ isVisible: true });
+  }
+
+  _hideBackDrop = (e) => {
+    e.stopPropagation();
+    this.setState({ isVisible: false });
+  }
+
   render() {
-    const { searchText, beersData, isErrored, favouriteItems, isFetching } = this.state;
+    const { searchText, beersData, isErrored, isVisible, isFetching } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     return (
       <div className = {classes.root}>
@@ -164,6 +195,7 @@ export default class Home extends Component {
                     history = {history}
                     isFavourite = {favouriteBeers[data.id]}
                     addToFavouritesHandler = {addToFavouritesHandler}
+                    onBeerItemCardClick = {this._onBeerItemCardClick}
                   />
                 ))
             }
@@ -171,6 +203,66 @@ export default class Home extends Component {
               {this._renderLoadingMore()}
             </div>
           )
+        }
+        {
+          isVisible ? (
+            <BackDrop
+              frameStyles = {classes.backDrop}
+              onClick = {this._hideBackDrop}
+              show = {isVisible}
+            >
+              <div className = {classes.popUpDialog} onClick = {(e) => {e.stopPropagation()}} >
+                <div className = {classes.container}>
+                  <div className = {classes.crossIcon}>
+                    <Icon
+                      onClick = {this._hideBackDrop}
+                      icon = {cross}
+                      size = {22}
+                    />
+                  </div>
+                  <div className = {classes.beerDetailsContainer}>
+                    <div className = {classes.beerImage}>
+                      <img src = {this.selectedBeer.image_url} alt = {this.selectedBeer.name}/>
+                    </div>
+                    <div className = {classes.beerDetails}>
+                      <span className = {classes.title}>{this.selectedBeer.name}</span>
+                      <span className = {classes.tagline}>{this.selectedBeer.tagline}</span>
+                      <div className = {classes.divider} />
+                      <div className = {classes.beerUnitsContainer}>
+                        {
+                          this.beerUnitFields.map(field => (
+                            <span key = {field.title}>
+                              <span className = {classes.title}>{`${field.title}:`}</span>
+                              <span className = {classes.content}>{this.selectedBeer[field.keyName]}</span>
+                            </span>
+                          ))
+                        }
+                      </div>
+                      <span className = {classes.description}>{this.selectedBeer.description}</span>
+                      {
+                        this.selectedBeer.food_pairing.length > 0 ? (
+                          <div className = {classes.bestServedContainer}>
+                            <span className = {classes.bestServedText}>Best served with:</span>
+                            {
+                              this.selectedBeer.food_pairing.map(foodPair => (
+                                <span key = {foodPair}>
+                                  <span className = {classes.bullet}>  •  </span>
+                                  <span className = {classes.foodPairText}>{foodPair}</span>
+                                </span>
+                              ))
+                            }
+                          </div>
+                        ) : null
+                      }
+                    </div>
+                  </div>
+                  <div className = {classes.similarBeersContainer} >
+                    part2
+                  </div>
+                </div>
+              </div>
+            </BackDrop>
+          ) : null
         }
       </div>
     );

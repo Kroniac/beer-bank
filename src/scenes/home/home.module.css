@@ -44,3 +44,141 @@
   padding: 10px;
   margin-top: 50px;
 }
+
+.backDrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popUpDialog {
+  display: flex;
+  flex-direction: column;
+  width: 98%;
+  max-width: 650px;
+  height: 99%;
+  max-height: 800px;
+  background: white;
+  border-radius: 2px;
+}
+
+.popUpDialog .container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 10px;
+  position: relative;
+}
+
+.beerDetailsContainer {
+  display: flex;
+  padding-top: 20px;
+  height: calc(70% - 25px);
+}
+
+.similarBeersContainer {
+  display: flex;
+  height: 30%;
+}
+
+.crossIcon {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 25px;
+  width: 100%;
+  color: gray;
+  position: relative;
+}
+
+.crossIcon:hover {
+  color: #e67e22;
+}
+
+.beerDetailsContainer .beerImage {
+  display: flex;
+  width: 30%;
+  height: 100%;
+}
+
+.beerDetailsContainer .beerImage img {
+  height: 98%;
+  width: 98%;
+  object-fit: contain;
+}
+
+.beerDetailsContainer .beerDetails {
+  display: flex;
+  width: 70%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.beerDetailsContainer .beerDetails .title {
+  color: #e67e22;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.beerDetailsContainer .beerDetails .tagline {
+  color: gainsboro;
+  font-size: 18px;
+}
+
+.beerDetailsContainer .beerDetails .divider {
+  height: 7px;
+  width: 100px;
+  margin: 16px 0px;
+  background: purple;
+}
+
+.beerDetailsContainer .beerDetails .description {
+  color: gray;
+  font-size: 16px;
+}
+.beerDetailsContainer .beerDetails .bestServedContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+.beerDetailsContainer .beerDetails .bestServedText {
+  color: dimgray;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.beerDetailsContainer .beerDetails  .bullet {
+  color: dimgray;
+  font-weight: bold;
+  font-size: 18px;
+  white-space: pre;
+}
+
+.beerDetailsContainer .beerDetails  .foodPairText {
+  color: gray;
+  font-size: 16px;
+}
+
+.beerDetailsContainer .beerUnitsContainer {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.beerDetailsContainer .beerUnitsContainer span {
+  display: flex;
+  margin-right: 7px;
+}
+
+
+.beerDetailsContainer .beerUnitsContainer .title {
+  color: dimgray;
+  font-weight: bold;
+  font-size: 17px;
+  white-space: pre; 
+}
+
+.beerDetailsContainer .beerUnitsContainer .content {
+  color: gray;
+  font-size: 16px;
+}
