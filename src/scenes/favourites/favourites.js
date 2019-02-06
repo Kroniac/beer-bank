@@ -4,9 +4,41 @@ import classes from './favourites.module.css';
 import { SharedUI } from '../../config/import_paths';
 
 const { BeerItemCard } = SharedUI.BeerItemCard();
+const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
 
 export default class Favourites extends Component {
+  state = {
+    isDetailedBeerModalVisible: false,
+  }
+
+  beerUnitFields = [
+    {
+      title: 'IBU',
+      keyName: 'ibu',
+    },
+    {
+      title: 'ABV',
+      keyName: 'abv',
+    },
+    {
+      title: 'EBC',
+      keyName: 'ebc',
+    },
+  ];
+
+  _onBeerItemCardClick = (data) => {
+    this.selectedBeer = data;
+    this.setState({ isDetailedBeerModalVisible: true });
+  }
+
+  
+  _hideDetailedBeerModal = (e) => {
+    e.stopPropagation();
+    this.setState({ isDetailedBeerModalVisible: false });
+  }
+
   render() {
+    const { isDetailedBeerModalVisible } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     const favouriteBeersKeys = Object.keys(favouriteBeers);
     return (
@@ -31,11 +63,23 @@ export default class Favourites extends Component {
                     history = {history}
                     isFavourite = {favouriteBeers[favouriteBeers[key].id]}
                     addToFavouritesHandler = {addToFavouritesHandler}
+                    onBeerItemCardClick = {this._onBeerItemCardClick}
                   />
                 ))
             }
-          </div>
+            </div>
           )
+        }
+        {
+          isDetailedBeerModalVisible ? (
+            <DetailedBeerModal
+              isVisible = {isDetailedBeerModalVisible}
+              beerData = {this.selectedBeer}
+              onBackDropClick = {this._hideDetailedBeerModal}
+              onCloseClick = {this._hideDetailedBeerModal}
+              beerUnitFields = {this.beerUnitFields}
+            />
+          ) : null
         }
       </div>
     );
