@@ -206,65 +206,105 @@ export default class Home extends Component {
         }
         {
           isVisible ? (
-            <BackDrop
-              frameStyles = {classes.backDrop}
-              onClick = {this._hideBackDrop}
-              show = {isVisible}
-            >
-              <div className = {classes.popUpDialog} onClick = {(e) => {e.stopPropagation()}} >
-                <div className = {classes.container}>
-                  <div className = {classes.crossIcon}>
-                    <Icon
-                      onClick = {this._hideBackDrop}
-                      icon = {cross}
-                      size = {22}
-                    />
-                  </div>
-                  <div className = {classes.beerDetailsContainer}>
-                    <div className = {classes.beerImage}>
-                      <img src = {this.selectedBeer.image_url} alt = {this.selectedBeer.name}/>
-                    </div>
-                    <div className = {classes.beerDetails}>
-                      <span className = {classes.title}>{this.selectedBeer.name}</span>
-                      <span className = {classes.tagline}>{this.selectedBeer.tagline}</span>
-                      <div className = {classes.divider} />
-                      <div className = {classes.beerUnitsContainer}>
-                        {
-                          this.beerUnitFields.map(field => (
-                            <span key = {field.title}>
-                              <span className = {classes.title}>{`${field.title}:`}</span>
-                              <span className = {classes.content}>{this.selectedBeer[field.keyName]}</span>
-                            </span>
-                          ))
-                        }
-                      </div>
-                      <span className = {classes.description}>{this.selectedBeer.description}</span>
-                      {
-                        this.selectedBeer.food_pairing.length > 0 ? (
-                          <div className = {classes.bestServedContainer}>
-                            <span className = {classes.bestServedText}>Best served with:</span>
-                            {
-                              this.selectedBeer.food_pairing.map(foodPair => (
-                                <span key = {foodPair}>
-                                  <span className = {classes.bullet}>  •  </span>
-                                  <span className = {classes.foodPairText}>{foodPair}</span>
-                                </span>
-                              ))
-                            }
-                          </div>
-                        ) : null
-                      }
-                    </div>
-                  </div>
-                  <div className = {classes.similarBeersContainer} >
-                    part2
-                  </div>
-                </div>
-              </div>
-            </BackDrop>
+            <BeerDetailsDialogBox
+              isVisible = {isVisible}
+              beerData = {this.selectedBeer}
+              onBackDropClick = {this._hideBackDrop}
+              onCloseClick = {this._hideBackDrop}
+              beerUnitFields = {this.beerUnitFields}
+              fetchSimilarBeers = {() => {}}
+            />
           ) : null
         }
       </div>
     );
+  }
+}
+
+class BeerDetailsDialogBox extends Component {
+  componentDidMount() {
+    this.props.fetchSimilarBeers()
+  }
+
+  render() {
+    const { isVisible, beerData, onBackDropClick, onCloseClick, beerUnitFields } = this.props;
+    return (
+      <BackDrop
+        frameStyles = {classes.backDrop}
+        onClick = {onBackDropClick}
+        show = {isVisible}
+      >
+        <div className = {classes.popUpDialog} onClick = {(e) => {e.stopPropagation()}} >
+          <div className = {classes.container}>
+            <div className = {classes.crossIcon}>
+              <Icon
+                onClick = {onCloseClick}
+                icon = {cross}
+                size = {22}
+              />
+            </div>
+            <div className = {classes.beerDetailsContainer}>
+              <div className = {classes.beerImage}>
+                <img src = {beerData.image_url} alt = {beerData.name}/>
+              </div>
+              <div className = {classes.beerDetails}>
+                <span className = {classes.title}>{beerData.name}</span>
+                <span className = {classes.tagline}>{beerData.tagline}</span>
+                <div className = {classes.divider} />
+                <div className = {classes.beerUnitsContainer}>
+                  {
+                    beerUnitFields.map(field => (
+                      <span key = {field.title}>
+                        <span className = {classes.title}>{`${field.title}:`}</span>
+                        <span className = {classes.content}>{beerData[field.keyName]}</span>
+                      </span>
+                    ))
+                  }
+                </div>
+                <span className = {classes.description}>{beerData.description}</span>
+                {
+                  beerData.food_pairing.length > 0 ? (
+                    <div className = {classes.bestServedContainer}>
+                      <span className = {classes.bestServedText}>Best served with:</span>
+                      {
+                        beerData.food_pairing.map(foodPair => (
+                          <span key = {foodPair}>
+                            <span className = {classes.bullet}>  •  </span>
+                            <span className = {classes.foodPairText}>{foodPair}</span>
+                          </span>
+                        ))
+                      }
+                    </div>
+                  ) : null
+                }
+              </div>
+            </div>
+            <div className = {classes.similarBeersContainer} >
+              <span className = {classes.heading}>You might also like:</span>
+              <SimilarBeerCard
+                imageSrc = 'https://images.punkapi.com/v2/2.png'
+                title = 'Trashy Blonde'
+              />
+            </div>
+          </div>
+        </div>
+      </BackDrop>
+    );
+  }
+}
+
+class SimilarBeerCard extends Component {
+  render() {
+    const { imageSrc, title } = this.props;
+    return (
+      <div className = {classes.similarBeerCardContainer}>
+        <figure className = {classes.cardFigure} >
+          <img src = {imageSrc} alt = {title}/>
+          <figcaption>
+            <span className = {classes.title} >{title}</span>
+          </figcaption>
+        </figure>
+      </div>
+    )
   }
 }

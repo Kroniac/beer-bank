@@ -31,7 +31,6 @@ export class BeerItemCard extends PureComponent {
 
   render() {
     const { imageSrc, title, tagline, isFavourite } = this.props;
-    console.log(isFavourite);
     return (
       <div className = {classes.cardContainer} onClick = {this._onBeerItemCardClick}>
         <div className = {classes.star}>
