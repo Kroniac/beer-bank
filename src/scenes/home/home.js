@@ -216,7 +216,7 @@ export class Home extends Component {
           ) : (
             <div className = {classes.beersListContainer}>
               {
-                beersData.map((data, index) => (
+                beersData.map(data => (
                   <BeerItemCard
                     key = {data.id}
                     data = {data}

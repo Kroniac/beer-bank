@@ -9,6 +9,7 @@ export const SharedUI = {
   BeerItemCard: () => require('../shared_ui/beer_item_card/beer_item_card'),
   Modal: () => require('../shared_ui/modal/modal'),
   DetailedBeerModal: () => require('../shared_ui/detailed_beer_modal/detailed_beer_modal'),
+  Button: () => require('../shared_ui/button/button'),
 };
 
 export const UiComponents = {

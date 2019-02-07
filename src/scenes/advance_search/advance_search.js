@@ -6,6 +6,7 @@ import { SharedUI, Config } from '../../config/import_paths';
 const { NavigationPaths, AdvanceFilters } = Config.Constants();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
+const { Button } = SharedUI.Button();
 
 export class AdvanceSearch extends Component {
   state = this.props.advanceFiltersValue;
@@ -45,7 +46,16 @@ export class AdvanceSearch extends Component {
               ))
             }
           </div>
-          <button onClick = {this._onSubmitClick} >Submit</button>
+          <div className = {classes.buttonContainer}>
+            <Button
+              tabIndex = {-1}
+              type = "submit"
+              frameStyles = {classes.searchButton}
+              onClick = {this._onSubmitClick}
+            >
+              Search
+            </Button>
+          </div>
         </div>
       </div>
     );

@@ -49,6 +49,23 @@
   padding: 10px;
 }
 
+.buttonContainer {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding: 10px;
+}
+
+.searchButton {
+  width: 150px;
+  height: 35px;
+  transition: ease 0.1s;
+}
+
+.searchButton:hover {
+  transform: scale(1.1);
+}
+
 @media (max-width: 845px) {
   .card {
     margin-top: 20px;
