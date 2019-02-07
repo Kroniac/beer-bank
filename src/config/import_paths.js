@@ -10,6 +10,7 @@ export const SharedUI = {
   Modal: () => require('../shared_ui/modal/modal'),
   DetailedBeerModal: () => require('../shared_ui/detailed_beer_modal/detailed_beer_modal'),
   Button: () => require('../shared_ui/button/button'),
+  Snackbar: () => require('../shared_ui/snackbar/snackbar'),
 };
 
 export const UiComponents = {
@@ -20,5 +21,9 @@ export const UiComponents = {
 
 export const Config = {
   ApiUrls: () => require('./api_urls'),
-  Constants:() => require('./constants.js'),
+  Constants:() => require('./constants'),
+}
+
+export const Libs = {
+  Networking: () => require('../libs/networking'),
 }

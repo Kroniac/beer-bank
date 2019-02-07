@@ -6,11 +6,14 @@ import { Icon } from 'react-icons-kit';
 import { cross } from 'react-icons-kit/entypo/cross';
 import classes from './detailed_beer_modal.module.css';
 
-import { SharedUI, Config } from '../../config/import_paths';
+import { SharedUI, Config, Libs } from '../../config/import_paths';
 
 const { ApiUrls } = Config.ApiUrls();
 
+const { GetNetErrorCode } = Libs.Networking();
+
 const { Modal } = SharedUI.Modal();
+const { Snackbar } = SharedUI.Snackbar();
 
 export class DetailedBeerModal extends Component {
   static propTypes = {
@@ -24,12 +27,20 @@ export class DetailedBeerModal extends Component {
     isFetching: false,
   }
 
+  isUnmounted = false;
+
+  snackRef = React.createRef(); // ref for Snackbar component
+
   componentDidMount() {
     const { beerData } = this.props;
     this._fetchSimilarBeers(beerData.ingredients.yeast);
   }
 
-  _fetchSimilarBeers = yeastName => new Promise((resolve, reject) => {
+  componentWillUnmount() {
+    this.isUnmounted = true;
+  }
+
+  _fetchSimilarBeers = (yeastName) => {
     this.setState({ isFetching: true });
     const params = {
       page: 1,
@@ -46,26 +57,23 @@ export class DetailedBeerModal extends Component {
             { similarBeers: res.data },
             () => this.setState({ isFetching: false }),
           );
-          resolve();
         } else {
           this.setState({ isFetching: false });
-          reject();
         }
       })
       .catch((err) => {
-        console.log(err);
-        // const { setLoggedInStateHandler } = this.props;
-        // const errorCode = GetNetErrorCode(err);
-        // if (errorCode === 401) setLoggedInStateHandler(false);
-        // else if (!this.isUnmounted) {
-        //   if (errorCode === 400) this._openSnackBar('Not Found');
-        //   else this._openSnackBar();
-        //   this.setState({ isFetching: false, isErrored: true });
-        //   StandardNetErrorHandling(err);
-        //   reject();
-        // }
+        const errorCode = GetNetErrorCode(err);
+        if (!this.isUnmounted) {
+          if (errorCode) this._openSnackBar(`Something Went Wrong: ${errorCode}`);
+          else this._openSnackBar();
+          this.setState({ isFetching: false });
+        }
       });
-  });
+  };
+
+  _openSnackBar = (message = 'Something went wrong...') => {
+    if (this.snackRef.current) this.snackRef.current.openSnackBar(message);
+  }
 
   _renderSimilarBeerCardList = () => {
     const { isFetching, similarBeers } = this.state;
@@ -96,7 +104,6 @@ export class DetailedBeerModal extends Component {
   }
 
   render() {
-    const { similarBeers } = this.state;
     const { isVisible, beerData, onBackDropClick, onCloseClick, beerUnitFields } = this.props;
     return (
       <Modal
@@ -157,6 +164,7 @@ export class DetailedBeerModal extends Component {
             </div>
           </div>
         </div>
+        <Snackbar ref = {this.snackRef} />
       </Modal>
     );
   }

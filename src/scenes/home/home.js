@@ -6,14 +6,18 @@ import Waypoint from 'react-waypoint';
 import { NavLink } from 'react-router-dom';
 import classes from './home.module.css';
 
-import { SharedUI, Config } from '../../config/import_paths';
+import { SharedUI, Config, Libs } from '../../config/import_paths';
 
 const { ApiUrls } = Config.ApiUrls();
 const { NavigationPaths, AdvanceFilters, BeerNameFilter } = Config.Constants();
 
+const { GetNetErrorCode } = Libs.Networking();
+
 const { AnimatedTextInput } = SharedUI.TextInput();
 const { BeerItemCard } = SharedUI.BeerItemCard();
 const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
+const { Snackbar } = SharedUI.Snackbar();
+const { Button } = SharedUI.Button();
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
@@ -24,11 +28,16 @@ export class Home extends Component {
     searchText: this.props.beerNameFilterValue,
     isFetching: false,
     isErrored: false,
+    selectedBeer: {},
+    isOverLayVisible: false,
     isDetailedBeerModalVisible: false,
-    selectedBeer: {}
   }
 
   filters = {};
+
+  isUnmounted = false;
+
+  snackRef = React.createRef(); // ref for Snackbar component
 
   beerUnitFields = [
     {
@@ -45,8 +54,15 @@ export class Home extends Component {
     },
   ];
 
-  componentDidMount() {
-    this._fetchBeers();
+  async componentDidMount() {
+    this.setState({ isOverLayVisible: true });
+    await this._fetchBeers();
+    this.setState({ isOverLayVisible: false });
+  }
+
+  
+  componentWillUnmount() {
+    this.isUnmounted = true;
   }
 
   _fetchBeers = (pageNumber = INITIAL_PAGE) => new Promise((resolve, reject) => {
@@ -87,19 +103,19 @@ export class Home extends Component {
         }
       })
       .catch((err) => {
-        console.log(err);
-        // const { setLoggedInStateHandler } = this.props;
-        // const errorCode = GetNetErrorCode(err);
-        // if (errorCode === 401) setLoggedInStateHandler(false);
-        // else if (!this.isUnmounted) {
-        //   if (errorCode === 400) this._openSnackBar('Not Found');
-        //   else this._openSnackBar();
-        //   this.setState({ isFetching: false, isErrored: true });
-        //   StandardNetErrorHandling(err);
-        //   reject();
-        // }
+        const errorCode = GetNetErrorCode(err);
+        if (!this.isUnmounted) {
+          if (errorCode) this._openSnackBar(`Something Went Wrong: ${errorCode}`);
+          else this._openSnackBar();
+          this.setState({ isFetching: false, isErrored: true });
+          reject();
+        }
       });
   });
+
+  _openSnackBar = (message = 'Something went wrong...') => {
+    if (this.snackRef.current) this.snackRef.current.openSnackBar(message);
+  }
 
   _returnFiltersParams = () => {
     const { searchText } = this.state;
@@ -138,14 +154,13 @@ export class Home extends Component {
     if (isErrored) {
       return (
         <div className = {classes.centerContainer}>
-          <button
+          <Button
             type = "button"
-            className = {classes.orderButton}
-
+            frameStyles = {classes.retryButton}
             onClick = {this._onRetryToLoadClick}
           >
             Retry to load
-          </button>
+          </Button>
         </div>
       );
     } return null;
@@ -160,15 +175,16 @@ export class Home extends Component {
     const { nextPage, isErrored } = this.state;
     if (nextPage === null) return null;
     return !isErrored ? (
-      <div className = {classes.centerContainer} style = {{ height: 50 }}>Loading...</div>
+      <div className = {classes.centerContainer}>Loading...</div>
     ) : null;
   }
 
   _onSearchTextChangeHandler = (attrName, value) => {
     const { updateBeerNameFilter } = this.props;
-    this.setState({ [attrName]: value }, () => {
+    this.setState({ [attrName]: value, isOverLayVisible: true }, async () => {
       updateBeerNameFilter(value);
-      this._fetchBeers();
+      await this._fetchBeers();
+      this.setState({ isOverLayVisible: false });
     });
   }
 
@@ -189,14 +205,15 @@ export class Home extends Component {
   }
 
   render() {
-    const { searchText, beersData, isErrored, isDetailedBeerModalVisible, isFetching, selectedBeer } = this.state;
+    const { searchText, beersData, isDetailedBeerModalVisible, isFetching, selectedBeer,
+      isOverLayVisible } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     return (
       <div className = {classes.root}>
         <div className = {classes.headerSearchBox}>
-          <span className = {classes.headerText} >The Beer Bank</span>
-          <span className = {classes.subHeaderText} >Find your favourite beer here</span>
-          <span className = {classes.textInput} >
+          <span className = {classes.headerText}>The Beer Bank</span>
+          <span className = {classes.subHeaderText}>Find your favourite beer here</span>
+          <span className = {classes.textInput}>
             <AnimatedTextInput
               attrName = "searchText"
               title = "Search for beer name"
@@ -206,35 +223,46 @@ export class Home extends Component {
           </span>
           <NavLink exact to = {NavigationPaths.AdvanceSearch}>Advance Search</NavLink>
         </div>
-        {
-          beersData.length === 0 && !isFetching ? (
-            <div className = {classes.container}>
-              <div className = {classes.centerContainer}>
-                No Beer(s) Found
+        <div className = {classes.beerListSection}>
+          {
+            isOverLayVisible ? (
+              <div className = {classes.overLay}>
+                <div className = {classes.centerContainer}>
+                  Loading...
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className = {classes.beersListContainer}>
-              {
-                beersData.map(data => (
-                  <BeerItemCard
-                    key = {data.id}
-                    data = {data}
-                    imageSrc = {data.image_url}
-                    title = {data.name}
-                    tagline = {data.tagline}
-                    history = {history}
-                    isFavourite = {favouriteBeers[data.id]}
-                    addToFavouritesHandler = {addToFavouritesHandler}
-                    onBeerItemCardClick = {this._onBeerItemCardClick}
-                  />
-                ))
-            }
-              {this._renderWaypoint()}
-              {this._renderLoadingMore()}
-            </div>
-          )
-        }
+            ) : null
+          }
+          {
+            beersData.length === 0 && !isFetching ? (
+              <div className = {classes.container}>
+                <div className = {classes.centerContainer}>
+                  No Beer(s) Found
+                </div>
+              </div>
+            ) : (
+              <div className = {classes.beersListContainer}>
+                {
+                  beersData.map(data => (
+                    <BeerItemCard
+                      key = {data.id}
+                      data = {data}
+                      imageSrc = {data.image_url}
+                      title = {data.name}
+                      tagline = {data.tagline}
+                      history = {history}
+                      isFavourite = {favouriteBeers[data.id]}
+                      addToFavouritesHandler = {addToFavouritesHandler}
+                      onBeerItemCardClick = {this._onBeerItemCardClick}
+                    />
+                  ))
+              }
+                {this._renderWaypoint()}
+                {this._renderLoadingMore()}
+              </div>
+            )
+          }
+        </div>
         {
           isDetailedBeerModalVisible ? (
             <DetailedBeerModal
@@ -247,6 +275,7 @@ export class Home extends Component {
             />
           ) : null
         }
+        <Snackbar ref = {this.snackRef} />
       </div>
     );
   }

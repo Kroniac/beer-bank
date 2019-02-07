@@ -33,6 +33,42 @@
   width: 400px;
 }
 
+.beerListSection {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  position: relative;
+}
+
+.overLay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background-color: rgba(255,255,255,0.8);
+}
+
+.centerContainer{
+  display: flex;
+  width: 100%;
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+}
+
+.retryButton {
+  width: 150px;
+  height: 30px;
+  transition: ease 0.1s;
+}
+
+.retryButton:hover {
+  transform: scale(1.1);
+}
+
 .beersListContainer {
   display: flex;
   z-index: 1;
