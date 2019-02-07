@@ -18,15 +18,17 @@ export class Button extends PureComponent {
   render() {    
     const { isDisabled, onClick, frameStyles, type, children, ...buttonProps } = this.props;
     return (
-      <button
-        type = {type}
-        className = {frameStyles}
-        disabled = {isDisabled}
-        onClick = {onClick}
-        {...buttonProps}
-      >
-        {children}
-      </button>
+      <div className = {classes.myButton} >
+        <button
+          type = {type}
+          className = {frameStyles}
+          disabled = {isDisabled}
+          onClick = {onClick}
+          {...buttonProps}
+        >
+          {children}
+        </button>
+      </div>
     );
   }
 }
