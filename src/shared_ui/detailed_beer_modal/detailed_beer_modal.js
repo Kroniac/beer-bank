@@ -115,7 +115,7 @@ export class DetailedBeerModal extends Component {
             </div>
             <div className = {classes.beerDetailsContainer}>
               <div className = {classes.beerImage}>
-                <img src = {beerData.image_url} alt = {beerData.name}/>
+                <img src = {beerData.image_url} alt = {beerData.name} />
               </div>
               <div className = {classes.beerDetails}>
                 <span className = {classes.title}>{beerData.name}</span>

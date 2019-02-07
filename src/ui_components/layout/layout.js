@@ -16,7 +16,7 @@ class Layout extends Component {
     return (
       <React.Fragment>
         <Toolbar />
-        <main className = {classes.Content}>{children}</main>
+        {children}
       </React.Fragment>
     );
   }

@@ -13,7 +13,7 @@
 }
 
 .cardContainer:hover {
-  border-color: #f39c12;
+  border-color: #e67e22;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #f39c12;
   outline: 0 none;
   transition: transform 0.2s;

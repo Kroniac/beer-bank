@@ -3,14 +3,13 @@ import { string } from 'prop-types';
 import axios from 'axios';
 import Qs from 'qs';
 import Waypoint from 'react-waypoint';
-import { Icon } from 'react-icons-kit';
-import { cross } from 'react-icons-kit/entypo/cross';
+import { NavLink } from 'react-router-dom';
 import classes from './home.module.css';
 
 import { SharedUI, Config } from '../../config/import_paths';
 
-
 const { ApiUrls } = Config.ApiUrls();
+const { NavigationPaths, AdvanceFilters } = Config.Constants();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
 const { BeerItemCard } = SharedUI.BeerItemCard();
@@ -18,7 +17,8 @@ const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
-export default class Home extends Component {
+
+export class Home extends Component {
   state = {
     beersData: [],
     searchText: '',
@@ -57,7 +57,9 @@ export default class Home extends Component {
       page: pageNumber,
       per_page: PAGE_SIZE,  
     };
-    params = { ...params, ...this.filters };
+    const advanceFiltersParams = this._returnAdvanceFiltersParams();
+    console.log('filter', advanceFiltersParams);
+    params = { ...params, ...this.filters, ...advanceFiltersParams };
     const urlParameters = Qs.stringify(params);
     const url = ApiUrls.baseUrl
       + ApiUrls.getBeers.replace(/{urlParameters}/gi, urlParameters);
@@ -98,6 +100,25 @@ export default class Home extends Component {
         // }
       });
   });
+
+  _returnAdvanceFiltersParams = () => {
+    const advnaceFiltersParams = {};
+    const { advanceFilters } = this.props;
+    AdvanceFilters.forEach((filter) => {
+      if (advanceFilters[filter.attrName] !== filter.defaultValue) {
+        let value = advanceFilters[filter.attrName];
+        if (['brewedBefore', 'brewedAfter'].indexOf(filter.attrName) > -1) {
+          // 2019-02-03
+          if (value) {
+            const dateArray = value.split('-');
+            value = `${dateArray[1]}-${dateArray[0]}`;
+          }
+        }
+        advnaceFiltersParams[filter.paramKey] = value;
+      }
+    });
+    return advnaceFiltersParams;
+  }
 
   _loadMoreItems = () => {
     const { nextPage } = this.state;
@@ -179,6 +200,7 @@ export default class Home extends Component {
               onChangeText = {this._onChangeTextHandler}
             />
           </span>
+          <NavLink exact to = {NavigationPaths.AdvanceSearch}>Advance Search</NavLink>
         </div>
         {
           beersData.length === 0 && !isFetching ? (

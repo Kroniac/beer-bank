@@ -1,6 +1,7 @@
 export const Scenes = {
-  Home: () => require('../scenes/home/home').default,
-  Favourites: () => require('../scenes/favourites/favourites').default,
+  Home: () => require('../scenes/home/home'),
+  Favourites: () => require('../scenes/favourites/favourites'),
+  AdvanceSearch: () => require('../scenes/advance_search/advance_search'),
 }
 
 export const SharedUI = {

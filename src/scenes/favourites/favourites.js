@@ -6,7 +6,7 @@ import { SharedUI } from '../../config/import_paths';
 const { BeerItemCard } = SharedUI.BeerItemCard();
 const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
 
-export default class Favourites extends Component {
+export class Favourites extends Component {
   state = {
     selectedBeer: {},
     isDetailedBeerModalVisible: false,

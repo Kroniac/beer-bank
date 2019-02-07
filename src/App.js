@@ -4,25 +4,38 @@ import classes from './App.module.css';
 
 import { UiComponents, Scenes, Config } from './config/import_paths';
 
-const Home = Scenes.Home();
-const Favourites = Scenes.Favourites();
+const { NavigationPaths, AdvanceFilters } = Config.Constants();
+
+const { Home } = Scenes.Home();
+const { Favourites } = Scenes.Favourites();
+const { AdvanceSearch } = Scenes.AdvanceSearch();
 
 const Layout = UiComponents.Layout();
 
 class App extends Component {
-  state = {
-    favouriteBeers: {},
+  constructor(props) {
+    super(props);
+    this.advanceFilters = this._returnAdvanceFiltersInitialObj();
+    this.state = {
+      favouriteBeers: {},
+    };
   }
 
   componentDidMount() {
     const favouriteItems = localStorage.getItem('favourite_beers');
-    console.log(JSON.parse(favouriteItems));
     if (favouriteItems) this.setState({ favouriteBeers: JSON.parse(favouriteItems) });
     else localStorage.setItem('favourite_beers', JSON.stringify({}));
   }
 
+  _returnAdvanceFiltersInitialObj = () => {
+    const advanceFilters = {};
+    AdvanceFilters.forEach((filter) => {
+      advanceFilters[filter.attrName] = filter.defaultValue;
+    });
+    return advanceFilters;
+  }
+
   _addToFavouritesHandler = (beerData, isFavourite) => {
-    console.log('hello')
     const { favouriteBeers } = this.state;
     const favouriteItemsCopy = { ...favouriteBeers };
     if (isFavourite) delete favouriteItemsCopy[beerData.id];
@@ -31,24 +44,28 @@ class App extends Component {
     this.setState({ favouriteBeers: favouriteItemsCopy });
   }
 
+  _updateAdvanceFilterObj = (attrName, value) => {
+    this.advanceFilters[attrName] = value;
+  }
+
   render() {
     const { favouriteBeers } = this.state;
     return (
-      <div className = {classes.App}>
-        <Layout />
+      <Layout>
         <Switch>
           <Route
-            path = "/home"
+            path = {NavigationPaths.Home}
             render = {props => (
               <Home
                 {...props}
                 favouriteBeers = {favouriteBeers}
+                advanceFilters = {this.advanceFilters}
                 addToFavouritesHandler = {this._addToFavouritesHandler}
               />
             )}
           />
           <Route
-            path = "/favourites"
+            path = {NavigationPaths.Favourites}
             render = {props => (
               <Favourites
                 {...props}
@@ -57,9 +74,19 @@ class App extends Component {
               />
             )}
           />
-          <Redirect to = "/home" />
+          <Route
+            path = {NavigationPaths.AdvanceSearch}
+            render = {props => (
+              <AdvanceSearch
+                {...props}
+                advanceFilters = {this.advanceFilters}
+                updateAdvanceFilterObj = {this._updateAdvanceFilterObj}
+              />
+            )}
+          />
+          <Redirect to = {NavigationPaths.Home} />
         </Switch>
-      </div>
+      </Layout>
     );
   }
 }

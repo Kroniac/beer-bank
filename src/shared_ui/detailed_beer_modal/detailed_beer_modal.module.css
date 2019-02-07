@@ -22,6 +22,7 @@
   flex-direction: column;
   padding: 10px 20px;
   position: relative;
+  overflow: hidden;
 }
 
 .beerDetailsContainer {
@@ -29,13 +30,15 @@
   justify-content: space-between;
   padding-top: 20px;
   height: calc(65% - 22px);
+  overflow-y: hidden;
 }
 
 .similarBeersContainer {
   display: flex;
   height: 35%;
-  padding-top: 20px;
+  padding: 10px 0px;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .crossIcon {
@@ -59,7 +62,7 @@
 }
 
 .beerDetailsContainer .beerImage img {
-  height: 98%;
+  height: 95%;
   width: 80%;
   object-fit: contain;
 }
@@ -168,6 +171,11 @@
   background: white;
   border-radius: 2px;
   overflow: hidden;
+}
+
+.similarBeerCardContainer:hover{
+  border-color: #e67e22;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #f39c12;
 }
 
 .similarBeerCardContainer .cardFigure {

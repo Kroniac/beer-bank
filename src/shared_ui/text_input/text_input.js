@@ -26,12 +26,29 @@ export class AnimatedTextInput extends Component {
     isFieldActive: false,
   }
 
+  
+  styleNames = {
+    Small: {
+      wrapper: classes.wrapperSmall,
+      label: classes.labelSmall,
+      input: classes.inputSmall,
+      fieldActive: classes.fieldActiveSmall,
+    },
+    Normal:{
+      wrapper: classes.wrapper,
+      label: classes.label,
+      input: classes.input,
+      fieldActive: classes.fieldActive,
+    }
+  }
+
   textInput = React.createRef();
 
   _onFieldFocusHandler = () => {
     this.setState({
       isFieldActive: true,
     });
+    if (this.props.inputType === 'month') this.textInput.current.type = 'month';
   }
 
   _onFieldBlurHandler = (e) => {
@@ -40,6 +57,7 @@ export class AnimatedTextInput extends Component {
         isFieldActive: false,
       });
     }
+    if (this.props.inputType === 'month') this.textInput.current.type = 'text';
   }
 
   _changeTextHandler = (e) => {
@@ -57,21 +75,6 @@ export class AnimatedTextInput extends Component {
     event.preventDefault();
   }
 
-  styleNames = {
-    'Small': {
-      wrapper: classes.wrapperSmall,
-      label: classes.labelSmall,
-      input: classes.inputSmall,
-      fieldActive: classes.fieldActiveSmall,
-    },
-    'Normal':{
-      wrapper: classes.wrapper,
-      label: classes.label,
-      input: classes.input,
-      fieldActive: classes.fieldActive,
-    }
-  }
-
   render() {
     const { title, inputValue, inputType, isDisabled, size, textStyle } = this.props;
     return (
@@ -85,7 +88,7 @@ export class AnimatedTextInput extends Component {
           className = {this.styleNames[size].input}
           ref = {this.textInput}
           style = {textStyle}
-          type = {inputType}
+          type = {inputType === 'month' ? 'text' : inputType}
           value = {inputValue}
           disabled = {isDisabled}
           onFocus = {this._onFieldFocusHandler}
