@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { bool, element } from 'prop-types';
-import classes from './layout.module.css';
+import { element } from 'prop-types';
 import { UiComponents } from '../../config/import_paths';
 
-const Toolbar = UiComponents.Toolbar();
-// const SideDrawer = UiComponents.SideDrawer();
+const { Toolbar } = UiComponents.Toolbar();
 
-class Layout extends Component {
+export class Layout extends Component {
   static propTypes = {
     children: element.isRequired,
   }
@@ -21,5 +19,3 @@ class Layout extends Component {
     );
   }
 }
-
-export default Layout;

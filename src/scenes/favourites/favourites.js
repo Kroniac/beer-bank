@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, shape, func, object, number } from 'prop-types';
 import classes from './favourites.module.css';
 
 import { SharedUI } from '../../config/import_paths';
@@ -7,6 +8,18 @@ const { BeerItemCard } = SharedUI.BeerItemCard();
 const { DetailedBeerModal } = SharedUI.DetailedBeerModal();
 
 export class Favourites extends Component {
+  static propTypes = {
+    history: shape({
+      location: object,
+      push: func,
+    }).isRequired,
+    favouriteBeers: shape({
+      id: number,
+      name: string,
+    }).isRequired,
+    addToFavouritesHandler: func.isRequired,
+  }
+
   state = {
     selectedBeer: {},
     isDetailedBeerModalVisible: false,
@@ -59,7 +72,7 @@ export class Favourites extends Component {
           ) : (
             <div className = {classes.beersListContainer}>
               {
-                favouriteBeersKeys.map((key, index) => (
+                favouriteBeersKeys.map(key => (
                   <BeerItemCard
                     key = {favouriteBeers[key].id}
                     data = {favouriteBeers[key]}
@@ -67,7 +80,7 @@ export class Favourites extends Component {
                     title = {favouriteBeers[key].name}
                     tagline = {favouriteBeers[key].tagline}
                     history = {history}
-                    isFavourite = {favouriteBeers[favouriteBeers[key].id]}
+                    isFavourite = {!!favouriteBeers[favouriteBeers[key].id]}
                     addToFavouritesHandler = {addToFavouritesHandler}
                     onBeerItemCardClick = {this._onBeerItemCardClick}
                   />

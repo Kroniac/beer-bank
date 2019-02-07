@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { bool, func } from 'prop-types';
 import classes from './toolbar.module.css';
 
 import { UiComponents } from '../../config/import_paths';
 
-const NavigationItems = UiComponents.NavigationItems();
+const { NavigationItems } = UiComponents.NavigationItems();
 
-export default class Toolbar extends Component {
-
+export class Toolbar extends Component {
   render() {
     return (
       <header className = {classes.Toolbar}>

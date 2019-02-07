@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, number, shape } from 'prop-types';
+import { string, number, shape, func, bool, arrayOf } from 'prop-types';
 import axios from 'axios';
 import Qs from 'qs';
 import { Icon } from 'react-icons-kit';
@@ -20,6 +20,13 @@ export class DetailedBeerModal extends Component {
     beerData: shape({
       id: number,
     }).isRequired,
+    isVisible: bool.isRequired,
+    onSimilarBeerClick: func.isRequired,
+    onBackDropClick: func.isRequired,
+    onCloseClick: func.isRequired,
+    beerUnitFields: arrayOf(shape({
+      title: string.isRequired,
+    })).isRequired,
   }
 
   state = {
@@ -75,6 +82,10 @@ export class DetailedBeerModal extends Component {
     if (this.snackRef.current) this.snackRef.current.openSnackBar(message);
   }
 
+  _onDialogBoxClick = (e) => {
+    e.stopPropagation();
+  }
+
   _renderSimilarBeerCardList = () => {
     const { isFetching, similarBeers } = this.state;
     const { onSimilarBeerClick } = this.props;
@@ -111,7 +122,12 @@ export class DetailedBeerModal extends Component {
         onClick = {onBackDropClick}
         show = {isVisible}
       >
-        <div className = {classes.popUpDialog} onClick = {(e) => {e.stopPropagation()}} >
+        <div
+          className = {classes.popUpDialog}
+          role = "button"
+          tabIndex = {0}
+          onClick = {this._onDialogBoxClick}
+        >
           <div className = {classes.container}>
             <div className = {classes.crossIcon}>
               <Icon
@@ -156,21 +172,29 @@ export class DetailedBeerModal extends Component {
                 }
               </div>
             </div>
-            <div className = {classes.similarBeersContainer} >
+            <div className = {classes.similarBeersContainer}>
               <span className = {classes.heading}>You might also like:</span>
               {
                 this._renderSimilarBeerCardList()
               }
             </div>
           </div>
+          <Snackbar ref = {this.snackRef} />
         </div>
-        <Snackbar ref = {this.snackRef} />
       </Modal>
     );
   }
 }
 
 class SimilarBeerCard extends Component {
+  static propTypes = {
+    beerData: shape({
+      id: number,
+    }).isRequired,
+    imageSrc: string.isRequired,
+    title: string.isRequired,
+    onSimilarBeerCardClick: func.isRequired,
+  }
 
   _onCardClick = () => {
     const { beerData, onSimilarBeerCardClick } = this.props;
@@ -180,7 +204,12 @@ class SimilarBeerCard extends Component {
   render() {
     const { imageSrc, title } = this.props;
     return (
-      <div className = {classes.similarBeerCardContainer} onClick = {this._onCardClick}>
+      <div
+        className = {classes.similarBeerCardContainer}
+        role = "button"
+        tabIndex = {0}
+        onClick = {this._onCardClick}
+      >
         <figure className = {classes.cardFigure}>
           <img src = {imageSrc} alt = {title} />
           <figcaption>
@@ -188,6 +217,6 @@ class SimilarBeerCard extends Component {
           </figcaption>
         </figure>
       </div>
-    )
+    );
   }
 }

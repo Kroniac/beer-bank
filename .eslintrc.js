@@ -12,5 +12,10 @@ module.exports = {
         "camelcase": ["warn"],
         "react/destructuring-assignment": ["warn"],
         "object-curly-newline": ["warn"],
+        "jsx-a11y/click-events-have-key-events": ["warn"],
     },
+    "env": {
+        "browser": true,
+        "node": true
+    } 
 };

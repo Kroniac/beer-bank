@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { string, func, shape, number } from 'prop-types';
+import { string, func, shape, number, bool } from 'prop-types';
 import { Icon } from 'react-icons-kit';
 import { star } from 'react-icons-kit/fa/star';
 import { starO } from 'react-icons-kit/fa/starO';
@@ -13,6 +13,7 @@ export class BeerItemCard extends PureComponent {
     imageSrc: string.isRequired,
     title: string.isRequired,
     tagline: string.isRequired,
+    isFavourite: bool.isRequired,
     onBeerItemCardClick: func.isRequired,
     addToFavouritesHandler: func.isRequired,
   }
@@ -32,7 +33,12 @@ export class BeerItemCard extends PureComponent {
   render() {
     const { imageSrc, title, tagline, isFavourite } = this.props;
     return (
-      <div className = {classes.cardContainer} onClick = {this._onBeerItemCardClick}>
+      <div
+        className = {classes.cardContainer}
+        role = "button"
+        tabIndex = {0}
+        onClick = {this._onBeerItemCardClick}
+      >
         <div className = {classes.star}>
           <Icon
             onClick = {this._addToFavouritesHandler}
@@ -40,14 +46,14 @@ export class BeerItemCard extends PureComponent {
             size = {15}
           />
         </div>
-        <figure className = {classes.cardFigure} >
-          <img src = {imageSrc} alt = {title}/>
+        <figure className = {classes.cardFigure}>
+          <img src = {imageSrc} alt = {title} />
           <figcaption>
-            <span className = {classes.title} >{title}</span>
-            <span className = {classes.tagline} >{tagline}</span>
+            <span className = {classes.title}>{title}</span>
+            <span className = {classes.tagline}>{tagline}</span>
           </figcaption>
         </figure>
       </div>
-    )
+    );
   }
 }

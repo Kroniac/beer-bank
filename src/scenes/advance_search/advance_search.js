@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, shape, func, object, objectOf } from 'prop-types';
 import classes from './advance_search.module.css';
 
 import { SharedUI, Config } from '../../config/import_paths';
@@ -9,10 +10,18 @@ const { AnimatedTextInput } = SharedUI.TextInput();
 const { Button } = SharedUI.Button();
 
 export class AdvanceSearch extends Component {
+  static propTypes = {
+    advanceFiltersValue: objectOf(string).isRequired,
+    history: shape({
+      location: object,
+      push: func,
+    }).isRequired,
+    updateAdvanceFilterObj: func.isRequired,
+  }
+
   state = this.props.advanceFiltersValue;
 
   _updateAdvanceFilter = (attrName, value) => {
-    console.log(value);
     this.setState({
       [attrName]: value,
     });
@@ -28,7 +37,7 @@ export class AdvanceSearch extends Component {
       <div className = {classes.root}>
         <div className = {classes.headerSearchBox}>
           <span className = {classes.headerText}>Advance Search</span>
-          <span className = {classes.subHeaderText}>Find your favourite beer here</span>
+          <span className = {classes.subHeaderText}>Find the exact beer you want</span>
         </div>
         <div className = {classes.card}>
           <div className = {classes.cardContainer}>

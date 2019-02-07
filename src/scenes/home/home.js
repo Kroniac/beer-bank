@@ -1,5 +1,5 @@
-import React, { Component, PureComponent } from 'react';
-import { string } from 'prop-types';
+import React, { Component } from 'react';
+import { string, shape, func, object, objectOf, number } from 'prop-types';
 import axios from 'axios';
 import Qs from 'qs';
 import Waypoint from 'react-waypoint';
@@ -23,6 +23,21 @@ const INITIAL_PAGE = 1;
 const PAGE_SIZE = 10;
 
 export class Home extends Component {
+  static propTypes = {
+    beerNameFilterValue: string.isRequired,
+    advanceFiltersValue: objectOf(string).isRequired,
+    history: shape({
+      location: object,
+      push: func,
+    }).isRequired,
+    favouriteBeers: shape({
+      id: number,
+      name: string,
+    }).isRequired,
+    updateBeerNameFilter: func.isRequired,
+    addToFavouritesHandler: func.isRequired,
+  }
+
   state = {
     beersData: [],
     searchText: this.props.beerNameFilterValue,
@@ -60,7 +75,6 @@ export class Home extends Component {
     this.setState({ isOverLayVisible: false });
   }
 
-  
   componentWillUnmount() {
     this.isUnmounted = true;
   }
@@ -68,21 +82,18 @@ export class Home extends Component {
   _fetchBeers = (pageNumber = INITIAL_PAGE) => new Promise((resolve, reject) => {
     this.setState({ isFetching: true });
     let params = {};
-    const { beersData, searchText } = this.state;
+    const { beersData } = this.state;
     params = {
       page: pageNumber,
-      per_page: PAGE_SIZE,  
+      per_page: PAGE_SIZE,
     };
     const filtersParams = this._returnFiltersParams();
-    console.log('filter', filtersParams);
     params = { ...params, ...filtersParams };
     const urlParameters = Qs.stringify(params);
     const url = ApiUrls.baseUrl
       + ApiUrls.getBeers.replace(/{urlParameters}/gi, urlParameters);
-    console.log(url);
     axios({ url })
       .then((res) => {
-        console.log(res.data);
         if (res.status === 200) {
           const nextPage = res.data.length === PAGE_SIZE ? pageNumber + 1 : null;
           let newData = [];
@@ -251,7 +262,7 @@ export class Home extends Component {
                       title = {data.name}
                       tagline = {data.tagline}
                       history = {history}
-                      isFavourite = {favouriteBeers[data.id]}
+                      isFavourite = {!!favouriteBeers[data.id]}
                       addToFavouritesHandler = {addToFavouritesHandler}
                       onBeerItemCardClick = {this._onBeerItemCardClick}
                     />

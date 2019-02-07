@@ -9,7 +9,7 @@ const { Home } = Scenes.Home();
 const { Favourites } = Scenes.Favourites();
 const { AdvanceSearch } = Scenes.AdvanceSearch();
 
-const Layout = UiComponents.Layout();
+const { Layout } = UiComponents.Layout();
 
 class App extends Component {
   constructor(props) {
@@ -44,8 +44,9 @@ class App extends Component {
     this.setState({ favouriteBeers: favouriteItemsCopy });
   }
 
-  _updateBeerNameFilter = (value) => { 
-    this.beerNameFilterValue = value; };
+  _updateBeerNameFilter = (value) => {
+    this.beerNameFilterValue = value;
+  };
 
   _updateAdvanceFilterObj = (attrName, value) => {
     this.advanceFiltersValue[attrName] = value;

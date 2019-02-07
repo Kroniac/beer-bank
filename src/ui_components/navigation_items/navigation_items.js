@@ -6,7 +6,7 @@ import { Config } from '../../config/import_paths';
 
 const { NavigationPaths } = Config.Constants();
 
-export default class NavigationItems extends Component {
+export class NavigationItems extends Component {
   render() {
     return (
       <ul className = {classes.NavigationItems}>
