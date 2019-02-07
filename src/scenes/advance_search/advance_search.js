@@ -8,7 +8,7 @@ const { NavigationPaths, AdvanceFilters } = Config.Constants();
 const { AnimatedTextInput } = SharedUI.TextInput();
 
 export class AdvanceSearch extends Component {
-  state = this.props.advanceFilters;
+  state = this.props.advanceFiltersValue;
 
   _updateAdvanceFilter = (attrName, value) => {
     console.log(value);

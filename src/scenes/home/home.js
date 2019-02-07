@@ -9,7 +9,7 @@ import classes from './home.module.css';
 import { SharedUI, Config } from '../../config/import_paths';
 
 const { ApiUrls } = Config.ApiUrls();
-const { NavigationPaths, AdvanceFilters } = Config.Constants();
+const { NavigationPaths, AdvanceFilters, BeerNameFilter } = Config.Constants();
 
 const { AnimatedTextInput } = SharedUI.TextInput();
 const { BeerItemCard } = SharedUI.BeerItemCard();
@@ -21,7 +21,7 @@ const PAGE_SIZE = 10;
 export class Home extends Component {
   state = {
     beersData: [],
-    searchText: '',
+    searchText: this.props.beerNameFilterValue,
     isFetching: false,
     isErrored: false,
     isDetailedBeerModalVisible: false,
@@ -57,9 +57,9 @@ export class Home extends Component {
       page: pageNumber,
       per_page: PAGE_SIZE,  
     };
-    const advanceFiltersParams = this._returnAdvanceFiltersParams();
-    console.log('filter', advanceFiltersParams);
-    params = { ...params, ...this.filters, ...advanceFiltersParams };
+    const filtersParams = this._returnFiltersParams();
+    console.log('filter', filtersParams);
+    params = { ...params, ...filtersParams };
     const urlParameters = Qs.stringify(params);
     const url = ApiUrls.baseUrl
       + ApiUrls.getBeers.replace(/{urlParameters}/gi, urlParameters);
@@ -101,12 +101,16 @@ export class Home extends Component {
       });
   });
 
-  _returnAdvanceFiltersParams = () => {
-    const advnaceFiltersParams = {};
-    const { advanceFilters } = this.props;
+  _returnFiltersParams = () => {
+    const { searchText } = this.state;
+    const { advanceFiltersValue } = this.props;
+    const filtersParams = {};
+    if (searchText !== BeerNameFilter.defaultValue) {
+      filtersParams[BeerNameFilter.paramKey] = searchText;
+    }
     AdvanceFilters.forEach((filter) => {
-      if (advanceFilters[filter.attrName] !== filter.defaultValue) {
-        let value = advanceFilters[filter.attrName];
+      if (advanceFiltersValue[filter.attrName] !== filter.defaultValue) {
+        let value = advanceFiltersValue[filter.attrName];
         if (['brewedBefore', 'brewedAfter'].indexOf(filter.attrName) > -1) {
           // 2019-02-03
           if (value) {
@@ -114,10 +118,10 @@ export class Home extends Component {
             value = `${dateArray[1]}-${dateArray[0]}`;
           }
         }
-        advnaceFiltersParams[filter.paramKey] = value;
+        filtersParams[filter.paramKey] = value;
       }
     });
-    return advnaceFiltersParams;
+    return filtersParams;
   }
 
   _loadMoreItems = () => {
@@ -160,11 +164,12 @@ export class Home extends Component {
     ) : null;
   }
 
-  _onChangeTextHandler = (attrName, value) => {
-    this.setState({ [attrName]: value });
-    if (value !== '') this.filters.beer_name = value;
-    else delete this.filters.beer_name;
-    this._fetchBeers();
+  _onSearchTextChangeHandler = (attrName, value) => {
+    const { updateBeerNameFilter } = this.props;
+    this.setState({ [attrName]: value }, () => {
+      updateBeerNameFilter(value);
+      this._fetchBeers();
+    });
   }
 
   _onBeerItemCardClick = (data) => {
@@ -193,11 +198,10 @@ export class Home extends Component {
           <span className = {classes.subHeaderText} >Find your favourite beer here</span>
           <span className = {classes.textInput} >
             <AnimatedTextInput
-              ref = {this.inputRef}
               attrName = "searchText"
               title = "Search for beer name"
               inputValue = {searchText}
-              onChangeText = {this._onChangeTextHandler}
+              onChangeText = {this._onSearchTextChangeHandler}
             />
           </span>
           <NavLink exact to = {NavigationPaths.AdvanceSearch}>Advance Search</NavLink>

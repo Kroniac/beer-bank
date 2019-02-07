@@ -35,7 +35,7 @@
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  margin: 60px 10px 10px 10px;
+  margin: 30px 10px 10px 10px;
   border-radius: 2px;
   padding: 0px;
   width: 98%;
@@ -51,7 +51,7 @@
 
 @media (max-width: 845px) {
   .card {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 }
 

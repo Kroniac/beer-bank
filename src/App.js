@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import classes from './App.module.css';
 
 import { UiComponents, Scenes, Config } from './config/import_paths';
 
-const { NavigationPaths, AdvanceFilters } = Config.Constants();
+const { NavigationPaths, AdvanceFilters, BeerNameFilter } = Config.Constants();
 
 const { Home } = Scenes.Home();
 const { Favourites } = Scenes.Favourites();
@@ -15,7 +14,8 @@ const Layout = UiComponents.Layout();
 class App extends Component {
   constructor(props) {
     super(props);
-    this.advanceFilters = this._returnAdvanceFiltersInitialObj();
+    this.beerNameFilterValue = BeerNameFilter.defaultValue;
+    this.advanceFiltersValue = this._returnAdvanceFiltersInitialObj();
     this.state = {
       favouriteBeers: {},
     };
@@ -28,11 +28,11 @@ class App extends Component {
   }
 
   _returnAdvanceFiltersInitialObj = () => {
-    const advanceFilters = {};
+    const advanceFiltersValue = {};
     AdvanceFilters.forEach((filter) => {
-      advanceFilters[filter.attrName] = filter.defaultValue;
+      advanceFiltersValue[filter.attrName] = filter.defaultValue;
     });
-    return advanceFilters;
+    return advanceFiltersValue;
   }
 
   _addToFavouritesHandler = (beerData, isFavourite) => {
@@ -44,8 +44,11 @@ class App extends Component {
     this.setState({ favouriteBeers: favouriteItemsCopy });
   }
 
+  _updateBeerNameFilter = (value) => { 
+    this.beerNameFilterValue = value; };
+
   _updateAdvanceFilterObj = (attrName, value) => {
-    this.advanceFilters[attrName] = value;
+    this.advanceFiltersValue[attrName] = value;
   }
 
   render() {
@@ -59,7 +62,9 @@ class App extends Component {
               <Home
                 {...props}
                 favouriteBeers = {favouriteBeers}
-                advanceFilters = {this.advanceFilters}
+                beerNameFilterValue = {this.beerNameFilterValue}
+                advanceFiltersValue = {this.advanceFiltersValue}
+                updateBeerNameFilter = {this._updateBeerNameFilter}
                 addToFavouritesHandler = {this._addToFavouritesHandler}
               />
             )}
@@ -79,7 +84,7 @@ class App extends Component {
             render = {props => (
               <AdvanceSearch
                 {...props}
-                advanceFilters = {this.advanceFilters}
+                advanceFiltersValue = {this.advanceFiltersValue}
                 updateAdvanceFilterObj = {this._updateAdvanceFilterObj}
               />
             )}

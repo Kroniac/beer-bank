@@ -4,6 +4,14 @@ export const NavigationPaths = {
   AdvanceSearch: '/advance_search',
 };
 
+export const BeerNameFilter = {
+  attrName: 'beerName',
+  defaultValue: '',
+  title: 'Beer Name',
+  paramKey: 'beer_name',
+  keyboardType: 'text',
+};
+
 export const AdvanceFilters = [
   {
     attrName: 'maxIbu',
@@ -58,7 +66,7 @@ export const AdvanceFilters = [
     attrName: 'brewedAfter',
     defaultValue: '',
     title: 'Brewed After',
-    paramKey: 'brewed_before',
+    paramKey: 'brewed_after',
     keyboardType: 'month',
   },
 ];
