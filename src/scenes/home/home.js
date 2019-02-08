@@ -70,6 +70,7 @@ export class Home extends Component {
   ];
 
   async componentDidMount() {
+    document.title = 'Beer Bank App';
     this.setState({ isOverLayVisible: true });
     await this._fetchBeers();
     this.setState({ isOverLayVisible: false });
@@ -232,7 +233,9 @@ export class Home extends Component {
               onChangeText = {this._onSearchTextChangeHandler}
             />
           </span>
-          <NavLink exact to = {NavigationPaths.AdvanceSearch}>Advance Search</NavLink>
+          <NavLink className = {classes.advanceSearchLink} exact to = {NavigationPaths.AdvanceSearch}>
+            Advance Search
+          </NavLink>
         </div>
         <div className = {classes.beerListSection}>
           {
