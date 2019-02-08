@@ -201,12 +201,15 @@
 }
 
 @media (max-width: 500px) {
+  .beerDetailsContainer {
+    overflow-y: scroll; 
+  }
   .beerDetailsContainer .beerDetails .title {
-    font-size: 18px;
+    font-size: 17px;
   }
   
   .beerDetailsContainer .beerDetails .tagline {
-    font-size: 15px;
+    font-size: 14px;
   }
   
   .beerDetailsContainer .beerUnitsContainer .title {
@@ -219,6 +222,7 @@
 
   .beerDetailsContainer .beerDetails .description {
     font-size: 13px;
+    overflow-y: scroll;
   }
 
   .beerDetailsContainer .beerDetails .divider {
