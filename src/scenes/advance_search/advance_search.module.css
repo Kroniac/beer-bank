@@ -56,6 +56,26 @@
   padding: 10px;
 }
 
+.textInputContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.textInput {
+  display: flex;
+  width: 65%;
+  align-self: stretch;
+}
+
+.textInputInfo {
+  display: flex;
+  width: 35%;
+  margin-left: 10px;
+  font-size: 13px;
+  color: gray;
+}
+
 .searchButton {
   width: 150px;
   height: 35px;
@@ -66,9 +86,28 @@
   transform: scale(1.1);
 }
 
+@media (max-width: 950px) {
+  .textInput {
+    width: 55%;
+  }
+  .textInputInfo {
+    width: 45%;
+    font-size: 12.5px;
+  }
+}
+
 @media (max-width: 845px) {
   .card {
     margin-top: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .textInput {
+    width: 100%;
+  }
+  .textInputInfo {
+    display: none;
   }
 }
 

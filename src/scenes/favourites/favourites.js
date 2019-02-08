@@ -40,6 +40,10 @@ export class Favourites extends Component {
     },
   ];
 
+  componentDidMount() {
+    document.title = 'Favourite Beers';
+  }
+
   _onBeerItemCardClick = (data) => {
     this.setState({ selectedBeer: data, isDetailedBeerModalVisible: true });
   }

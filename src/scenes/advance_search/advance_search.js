@@ -21,6 +21,10 @@ export class AdvanceSearch extends Component {
 
   state = this.props.advanceFiltersValue;
 
+  componentDidMount() {
+    document.title = 'Advance Search';
+  }
+
   _updateAdvanceFilter = (attrName, value) => {
     this.setState({
       [attrName]: value,
@@ -43,15 +47,18 @@ export class AdvanceSearch extends Component {
           <div className = {classes.cardContainer}>
             {
               AdvanceFilters.map(filter => (
-                <span key = {filter.attrName} className = {classes.textInput}>
-                  <AnimatedTextInput
-                    attrName = {filter.attrName}
-                    title = {filter.title}
-                    inputValue = {this.state[filter.attrName]}
-                    inputType = {filter.keyboardType}
-                    onChangeText = {this._updateAdvanceFilter}
-                  />
-                </span>
+                <div key = {filter.attrName} className = {classes.textInputContainer}>
+                  <span className = {classes.textInput}>
+                    <AnimatedTextInput
+                      attrName = {filter.attrName}
+                      title = {filter.title}
+                      inputValue = {this.state[filter.attrName]}
+                      inputType = {filter.keyboardType}
+                      onChangeText = {this._updateAdvanceFilter}
+                    />
+                  </span>
+                  <span className = {classes.textInputInfo}>{filter.info}</span>
+                </div>
               ))
             }
           </div>
