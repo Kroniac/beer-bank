@@ -46,6 +46,7 @@ export class Home extends Component {
     selectedBeer: {},
     isOverLayVisible: false,
     isDetailedBeerModalVisible: false,
+    isAdvanceSearchActive: false,
   }
 
   filters = {};
@@ -88,7 +89,7 @@ export class Home extends Component {
       page: pageNumber,
       per_page: PAGE_SIZE,
     };
-    const filtersParams = this._returnFiltersParams();
+    const filtersParams = this._returnFiltersParamsAndSetAdvanceSearchStatus();
     params = { ...params, ...filtersParams };
     const urlParameters = Qs.stringify(params);
     const url = ApiUrls.baseUrl
@@ -129,15 +130,17 @@ export class Home extends Component {
     if (this.snackRef.current) this.snackRef.current.openSnackBar(message);
   }
 
-  _returnFiltersParams = () => {
+  _returnFiltersParamsAndSetAdvanceSearchStatus = () => {
     const { searchText } = this.state;
     const { advanceFiltersValue } = this.props;
     const filtersParams = {};
+    let isAdvanceSearchActive = false;
     if (searchText !== BeerNameFilter.defaultValue) {
       filtersParams[BeerNameFilter.paramKey] = searchText;
     }
     AdvanceFilters.forEach((filter) => {
       if (advanceFiltersValue[filter.attrName] !== filter.defaultValue) {
+        isAdvanceSearchActive = true;
         let value = advanceFiltersValue[filter.attrName];
         if (['brewedBefore', 'brewedAfter'].indexOf(filter.attrName) > -1) {
           // 2019-02-03
@@ -149,6 +152,7 @@ export class Home extends Component {
         filtersParams[filter.paramKey] = value;
       }
     });
+    if (this.state.isAdvanceSearchActive !== isAdvanceSearchActive) this.setState({ isAdvanceSearchActive });
     return filtersParams;
   }
 
@@ -218,7 +222,7 @@ export class Home extends Component {
 
   render() {
     const { searchText, beersData, isDetailedBeerModalVisible, isFetching, selectedBeer,
-      isOverLayVisible } = this.state;
+      isOverLayVisible, isAdvanceSearchActive } = this.state;
     const { history, favouriteBeers, addToFavouritesHandler } = this.props;
     return (
       <div className = {classes.root}>
@@ -234,7 +238,7 @@ export class Home extends Component {
             />
           </span>
           <NavLink className = {classes.advanceSearchLink} exact to = {NavigationPaths.AdvanceSearch}>
-            Advance Search
+            {isAdvanceSearchActive ? 'Advance Search (active)' : 'Advance Search'}
           </NavLink>
         </div>
         <div className = {classes.beerListSection}>
