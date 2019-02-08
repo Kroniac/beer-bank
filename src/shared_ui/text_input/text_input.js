@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, bool, object } from 'prop-types';
+import { string, func, bool, object, oneOfType } from 'prop-types';
 import classes from './text_input.module.css';
 
 export class AnimatedTextInput extends Component {
@@ -11,7 +11,7 @@ export class AnimatedTextInput extends Component {
     inputType: string,
     isDisabled: bool,
     size: string,
-    textStyle: object,
+    textStyle: oneOfType([object, string]),
   }
 
   static defaultProps = {
@@ -19,14 +19,13 @@ export class AnimatedTextInput extends Component {
     inputValue: '',
     isDisabled: false,
     size: 'Normal',
-    textStyle: {}
+    textStyle: {},
   }
 
   state = {
     isFieldActive: false,
   }
 
-  
   styleNames = {
     Small: {
       wrapper: classes.wrapperSmall,
@@ -34,12 +33,12 @@ export class AnimatedTextInput extends Component {
       input: classes.inputSmall,
       fieldActive: classes.fieldActiveSmall,
     },
-    Normal:{
+    Normal: {
       wrapper: classes.wrapper,
       label: classes.label,
       input: classes.input,
       fieldActive: classes.fieldActive,
-    }
+    },
   }
 
   textInput = React.createRef();
@@ -62,7 +61,7 @@ export class AnimatedTextInput extends Component {
 
   _changeTextHandler = (e) => {
     const { onChangeText, attrName } = this.props;
-    onChangeText(attrName, e.target.value)
+    onChangeText(attrName, e.target.value);
     this._onFieldFocusHandler();
     e.preventDefault();
   }
@@ -81,7 +80,10 @@ export class AnimatedTextInput extends Component {
       <div className = {this.styleNames[size].wrapper}>
         <label
           onClick = {this._onLabelClicked}
-          className={(this.state.isFieldActive || this.props.inputValue !== '') ? [this.styleNames[size].label, this.styleNames[size].fieldActive].join(" ") : this.styleNames[size].label}>
+          className={(this.state.isFieldActive || this.props.inputValue !== '')
+            ? [this.styleNames[size].label, this.styleNames[size].fieldActive].join(' ')
+            : this.styleNames[size].label}
+        >
           {title}
         </label>
         <input
