@@ -79,6 +79,7 @@
 .searchButton {
   width: 150px;
   height: 35px;
+  margin-bottom: 5px;
   transition: ease 0.1s;
 }
 
