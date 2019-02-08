@@ -67,4 +67,7 @@ figcaption .tagline {
   .cardContainer {
     width: 98%;
   }
+  .cardContainer:hover {
+    transform: none;
+  }
 }
