@@ -34,16 +34,16 @@
 }
 
 .advanceSearchLink {
-  display: block;
+  display: flex;
+  align-items: center;
   height: 20px;
   text-decoration: none;
   color: white;
   font-size: 13px;
   border-style: solid;
   border-color: white;
-  text-align: center;
-  padding: 2px 7px;
-  text-align: center;
+  padding: 0px 7px;
+  padding-bottom: 2px;
   border-width: 0.5px;
   transition: ease 0.1s;
 }
